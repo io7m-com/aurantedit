@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -16,7 +15,7 @@
   <packaging>jar</packaging>
   <name>com.io7m.aurantedit.filemodel</name>
   <description>Aurantium file editor (File model)</description>
-  <url>https://www.io7m.com/software/aurantium/</url>
+  <url>https://www.io7m.com/software/aurantedit/</url>
 
   <dependencies>
     <dependency>
@@ -162,7 +161,8 @@
               <includePluginDependencies>true</includePluginDependencies>
               <includeProjectDependencies>false</includeProjectDependencies>
               <arguments>
-                <argument>${project.basedir}/src/main/resources/com/io7m/aurantedit/filemodel/internal/database.xml</argument>
+                <argument>${project.basedir}/src/main/resources/com/io7m/aurantedit/filemodel/internal/database.xml
+                </argument>
                 <argument>${project.build.directory}/database.sql</argument>
                 <argument>ROLES</argument>
                 <argument>GRANTS</argument>
@@ -217,6 +217,22 @@
               </sources>
             </configuration>
           </execution>
+          <execution>
+            <id>add-sources</id>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <phase>
+              generate-sources
+            </phase>
+            <configuration>
+              <sources>
+                <source>
+                  ${project.build.directory}/generated-sources/string-template
+                </source>
+              </sources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -235,6 +251,33 @@
             </ignoredUnusedDeclaredDependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.io7m.stmp</groupId>
+        <artifactId>string-template-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-version</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>renderTemplate</goal>
+            </goals>
+            <configuration>
+              <template>
+                <inputFile>src/main/string-template/AEVersion.st</inputFile>
+                <name>AEVersion</name>
+                <outputFile>
+                  ${project.build.directory}/generated-sources/string-template/com/io7m/aurantedit/filemodel/AEVersion.java
+                </outputFile>
+                <properties>
+                  <appVersion>${project.version}</appVersion>
+                  <appBuild>${buildNumber}</appBuild>
+                </properties>
+              </template>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

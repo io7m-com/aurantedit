@@ -14,26 +14,29 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-open module com.io7m.aurantedit.tests
+/**
+ * Aurantium file editor (Command-line)
+ */
+
+module com.io7m.aurantedit.cmdline
 {
-  requires org.junit.jupiter.api;
-  requires org.junit.jupiter.engine;
-  requires org.junit.platform.commons;
-  requires org.junit.platform.engine;
-  requires org.junit.platform.launcher;
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
 
   requires com.io7m.aurantedit.filemodel;
-  requires com.io7m.aurantedit.cmdline;
 
   requires com.io7m.aurantium.api;
-  requires com.io7m.jattribute.core;
-  requires org.apache.commons.io;
-  requires com.io7m.lanark.core;
-  requires com.io7m.aurantium.vanilla;
-  requires com.io7m.aurantium.validation.api;
-  requires com.io7m.aurantium.parser.api;
-  requires org.slf4j;
-  requires com.io7m.quarrel.core;
+  requires com.io7m.aurantium.writer.api;
 
-  exports com.io7m.aurantedit.tests;
+  requires com.io7m.anethum.api;
+  requires com.io7m.jattribute.core;
+  requires com.io7m.quarrel.core;
+  requires com.io7m.quarrel.ext.logback;
+  requires com.io7m.seltzer.api;
+  requires com.io7m.seltzer.slf4j;
+  requires org.slf4j;
+
+  uses com.io7m.aurantium.writer.api.AUWriterFactoryType;
+
+  exports com.io7m.aurantedit.cmdline;
 }

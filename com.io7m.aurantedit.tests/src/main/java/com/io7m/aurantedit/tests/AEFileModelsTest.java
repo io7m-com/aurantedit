@@ -31,10 +31,6 @@ import com.io7m.aurantium.api.AUKeyAssignmentID;
 import com.io7m.aurantium.api.AUMetadataValue;
 import com.io7m.aurantium.api.AUOctetOrder;
 import com.io7m.aurantium.api.AUVersion;
-import com.io7m.aurantium.parser.api.AUParseRequest;
-import com.io7m.aurantium.validation.api.AUValidationRequest;
-import com.io7m.aurantium.vanilla.AU1Parsers;
-import com.io7m.aurantium.vanilla.AU1Validators;
 import com.io7m.aurantium.vanilla.AU1Writers;
 import com.io7m.lanark.core.RDottedName;
 import org.apache.commons.io.FileUtils;
@@ -45,21 +41,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import static com.io7m.aurantium.api.AUKeyAssignmentFlagType.AUKeyAssignmentFlagStandard.*;
+import static com.io7m.aurantium.api.AUKeyAssignmentFlagType.AUKeyAssignmentFlagStandard.FlagUnpitched;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class AEFileModelsTest
@@ -640,39 +633,7 @@ public final class AEFileModelsTest
           new AUVersion(1, 0)
         )
       ).get();
-      validate(this.directory.resolve("out.aam"));
-    }
-  }
-
-  private static void validate(
-    final Path path)
-    throws Exception
-  {
-    final var readers =
-      new AU1Parsers();
-    final var validators =
-      new AU1Validators();
-
-    try (var channel = FileChannel.open(path)) {
-      try (var reader = readers.createParser(
-        new AUParseRequest(
-          channel,
-          path.toUri()
-        )
-      )) {
-        final var file = reader.execute();
-        final var validator = validators.createValidator(
-          new AUValidationRequest(
-            file,
-            path.toUri()
-          )
-        );
-        final var errors = validator.execute();
-        for (final var error : errors) {
-          LOG.debug("Error: {}", error);
-        }
-        assertEquals(0, errors.size());
-      }
+      AEValidation.validate(this.directory.resolve("out.aam"));
     }
   }
 

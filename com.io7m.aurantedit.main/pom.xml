@@ -16,7 +16,7 @@
   <packaging>jar</packaging>
   <name>com.io7m.aurantedit.main</name>
   <description>Aurantium file editor (Main)</description>
-  <url>https://www.io7m.com/software/aurantium/</url>
+  <url>https://www.io7m.com/software/aurantedit/</url>
 
   <dependencies>
     <dependency>

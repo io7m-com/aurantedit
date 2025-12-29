@@ -1,5 +1,9 @@
+AEVersion(
+  appVersion,
+  appBuild) ::= <<
+
 /*
- * Copyright © 2025 Mark Raynsford <code@io7m.com> https://www.io7m.com
+ * Copyright © 2025 Mark Raynsford \<code@io7m.com\> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,26 +18,17 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-open module com.io7m.aurantedit.tests
+package com.io7m.aurantedit.filemodel;
+
+public final class AEVersion
 {
-  requires org.junit.jupiter.api;
-  requires org.junit.jupiter.engine;
-  requires org.junit.platform.commons;
-  requires org.junit.platform.engine;
-  requires org.junit.platform.launcher;
+  public static final String MAIN_VERSION = "<appVersion>";
+  public static final String MAIN_BUILD = "<appBuild>";
 
-  requires com.io7m.aurantedit.filemodel;
-  requires com.io7m.aurantedit.cmdline;
+  private AEVersion()
+  {
 
-  requires com.io7m.aurantium.api;
-  requires com.io7m.jattribute.core;
-  requires org.apache.commons.io;
-  requires com.io7m.lanark.core;
-  requires com.io7m.aurantium.vanilla;
-  requires com.io7m.aurantium.validation.api;
-  requires com.io7m.aurantium.parser.api;
-  requires org.slf4j;
-  requires com.io7m.quarrel.core;
-
-  exports com.io7m.aurantedit.tests;
+  }
 }
+
+>>

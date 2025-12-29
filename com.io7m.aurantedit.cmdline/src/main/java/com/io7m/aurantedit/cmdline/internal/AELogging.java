@@ -14,26 +14,28 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-open module com.io7m.aurantedit.tests
+package com.io7m.aurantedit.cmdline.internal;
+
+import com.io7m.seltzer.api.SStructuredErrorType;
+import com.io7m.seltzer.slf4j.SSLogging;
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
+
+final class AELogging
 {
-  requires org.junit.jupiter.api;
-  requires org.junit.jupiter.engine;
-  requires org.junit.platform.commons;
-  requires org.junit.platform.engine;
-  requires org.junit.platform.launcher;
+  private AELogging()
+  {
 
-  requires com.io7m.aurantedit.filemodel;
-  requires com.io7m.aurantedit.cmdline;
+  }
 
-  requires com.io7m.aurantium.api;
-  requires com.io7m.jattribute.core;
-  requires org.apache.commons.io;
-  requires com.io7m.lanark.core;
-  requires com.io7m.aurantium.vanilla;
-  requires com.io7m.aurantium.validation.api;
-  requires com.io7m.aurantium.parser.api;
-  requires org.slf4j;
-  requires com.io7m.quarrel.core;
-
-  exports com.io7m.aurantedit.tests;
+  static void logException(
+    final Logger logger,
+    final Exception e)
+  {
+    if (e instanceof final SStructuredErrorType<?> x) {
+      SSLogging.logMDC(logger, Level.ERROR, x);
+    } else {
+      logger.error("{}: ", e.getMessage(), e);
+    }
+  }
 }

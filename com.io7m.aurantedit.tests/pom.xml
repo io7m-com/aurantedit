@@ -16,7 +16,7 @@
   <packaging>jar</packaging>
   <name>com.io7m.aurantedit.tests</name>
   <description>Aurantium file editor (Test suite)</description>
-  <url>https://www.io7m.com/software/aurantium/</url>
+  <url>https://www.io7m.com/software/aurantedit/</url>
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
@@ -27,6 +27,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.aurantedit.filemodel</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.aurantedit.cmdline</artifactId>
       <version>${project.version}</version>
     </dependency>
 

@@ -14,26 +14,13 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-open module com.io7m.aurantedit.tests
-{
-  requires org.junit.jupiter.api;
-  requires org.junit.jupiter.engine;
-  requires org.junit.platform.commons;
-  requires org.junit.platform.engine;
-  requires org.junit.platform.launcher;
+/**
+ * Aurantium file editor (Command-line)
+ */
 
-  requires com.io7m.aurantedit.filemodel;
-  requires com.io7m.aurantedit.cmdline;
+@Export
+@Version("1.0.0")
+package com.io7m.aurantedit.cmdline;
 
-  requires com.io7m.aurantium.api;
-  requires com.io7m.jattribute.core;
-  requires org.apache.commons.io;
-  requires com.io7m.lanark.core;
-  requires com.io7m.aurantium.vanilla;
-  requires com.io7m.aurantium.validation.api;
-  requires com.io7m.aurantium.parser.api;
-  requires org.slf4j;
-  requires com.io7m.quarrel.core;
-
-  exports com.io7m.aurantedit.tests;
-}
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;
