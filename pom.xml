@@ -7,8 +7,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.io7m.primogenitor</groupId>
-    <artifactId>com.io7m.primogenitor.full</artifactId>
-    <version>8.3.1</version>
+    <artifactId>com.io7m.primogenitor.lite</artifactId>
+    <version>9.1.0</version>
   </parent>
 
   <groupId>com.io7m.aurantedit</groupId>
@@ -21,19 +21,22 @@
   <url>https://www.github.com/io7m-com/aurantedit</url>
 
   <modules>
-    <module>com.io7m.aurantedit.ui</module>
+    <module>com.io7m.aurantedit.filemodel</module>
     <module>com.io7m.aurantedit.main</module>
+    <module>com.io7m.aurantedit.tests</module>
+    <module>com.io7m.aurantedit.ui</module>
   </modules>
 
   <properties>
     <!-- Configuration. -->
     <io7m.api.previousVersion>0.0.2-SNAPSHOT</io7m.api.previousVersion>
-    <io7m.java.targetJavaVersion>21</io7m.java.targetJavaVersion>
+    <io7m.java.targetJavaVersion>25</io7m.java.targetJavaVersion>
 
     <!-- io7m dependencies. -->
-    <com.io7m.aurantium.version>0.0.2-SNAPSHOT</com.io7m.aurantium.version>
+    <com.io7m.aurantium.version>1.0.0-SNAPSHOT</com.io7m.aurantium.version>
     <com.io7m.brackish.version>0.0.1</com.io7m.brackish.version>
-    <com.io7m.darco.version>1.0.0</com.io7m.darco.version>
+    <com.io7m.darco.version>3.2.0</com.io7m.darco.version>
+    <com.io7m.ivoirax.version>0.0.2</com.io7m.ivoirax.version>
     <com.io7m.jade.version>1.0.3</com.io7m.jade.version>
     <com.io7m.jaffirm.version>4.0.1</com.io7m.jaffirm.version>
     <com.io7m.jattribute.version>1.0.1</com.io7m.jattribute.version>
@@ -41,7 +44,7 @@
     <com.io7m.jmulticlose.version>1.1.3</com.io7m.jmulticlose.version>
     <com.io7m.jnfp.version>3.0.0</com.io7m.jnfp.version>
     <com.io7m.jranges.version>6.0.0</com.io7m.jranges.version>
-    <com.io7m.jsamplebuffer.version>1.0.1-SNAPSHOT</com.io7m.jsamplebuffer.version>
+    <com.io7m.jsamplebuffer.version>1.0.1</com.io7m.jsamplebuffer.version>
     <com.io7m.jsx.version>3.1.1</com.io7m.jsx.version>
     <com.io7m.jwheatsheaf.version>4.0.0</com.io7m.jwheatsheaf.version>
     <com.io7m.jxtrand.version>2.1.0</com.io7m.jxtrand.version>
@@ -49,21 +52,20 @@
     <com.io7m.miscue.version>0.0.3</com.io7m.miscue.version>
     <com.io7m.repetoir.version>1.0.1</com.io7m.repetoir.version>
     <com.io7m.seltzer.version>1.1.0</com.io7m.seltzer.version>
-    <com.io7m.trasco.version>1.1.0</com.io7m.trasco.version>
+    <com.io7m.trasco.version>3.1.1</com.io7m.trasco.version>
     <com.io7m.verona.version>1.0.1</com.io7m.verona.version>
     <com.io7m.xoanon.version>2.0.0</com.io7m.xoanon.version>
     <com.io7m.xstructural.version>1.8.1</com.io7m.xstructural.version>
 
     <!-- Third-party dependencies. -->
     <ch.qos.logback.version>1.5.12</ch.qos.logback.version>
-    <com.tianscar.javasound.flac.version>1.4.1</com.tianscar.javasound.flac.version>
     <io.opentelemetry.version>1.44.1</io.opentelemetry.version>
     <net.jqwik.version>1.9.1</net.jqwik.version>
-    <org.javafx.version>23-ea+22</org.javafx.version>
+    <org.javafx.version>25.0.1</org.javafx.version>
     <org.jooq.version>3.19.15</org.jooq.version>
     <org.junit.version>5.11.3</org.junit.version>
     <org.slf4j.version>2.0.16</org.slf4j.version>
-    <org.xerial.sqlite.version>3.47.1.0</org.xerial.sqlite.version>
+    <org.xerial.sqlite.version>3.51.1.0</org.xerial.sqlite.version>
   </properties>
 
   <licenses>
@@ -99,13 +101,9 @@
       <name>io7m.com</name>
       <url>https://www.io7m.com/software/aurantedit</url>
     </site>
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
     <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+      <id>central</id>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -191,6 +189,11 @@
         <artifactId>com.io7m.jranges.core</artifactId>
         <version>${com.io7m.jranges.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.io7m.ivoirax</groupId>
+        <artifactId>com.io7m.ivoirax.core</artifactId>
+        <version>${com.io7m.ivoirax.version}</version>
+      </dependency>
 
       <!-- Error dialogs. -->
       <dependency>
@@ -207,28 +210,10 @@
       <!-- Aurantium. -->
       <dependency>
         <groupId>com.io7m.aurantium</groupId>
-        <artifactId>com.io7m.aurantium.api</artifactId>
+        <artifactId>com.io7m.aurantium.bom</artifactId>
         <version>${com.io7m.aurantium.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.io7m.aurantium</groupId>
-        <artifactId>com.io7m.aurantium.vanilla</artifactId>
-        <version>${com.io7m.aurantium.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.io7m.aurantium</groupId>
-        <artifactId>com.io7m.aurantium.validation.api</artifactId>
-        <version>${com.io7m.aurantium.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.io7m.aurantium</groupId>
-        <artifactId>com.io7m.aurantium.parser.api</artifactId>
-        <version>${com.io7m.aurantium.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.io7m.aurantium</groupId>
-        <artifactId>com.io7m.aurantium.writer.api</artifactId>
-        <version>${com.io7m.aurantium.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>com.io7m.jbssio</groupId>
@@ -255,12 +240,25 @@
         <artifactId>com.io7m.jnfp.core</artifactId>
         <version>${com.io7m.jnfp.version}</version>
       </dependency>
-
-      <!-- FLAC -->
       <dependency>
-        <groupId>com.tianscar.javasound</groupId>
-        <artifactId>javasound-flac</artifactId>
-        <version>${com.tianscar.javasound.flac.version}</version>
+        <groupId>com.io7m.verona</groupId>
+        <artifactId>com.io7m.verona.core</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.flannel</groupId>
+        <artifactId>com.io7m.flannel.core</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jxe</groupId>
+        <artifactId>com.io7m.jxe.core</artifactId>
+        <version>2.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.wendover</groupId>
+        <artifactId>com.io7m.wendover.core</artifactId>
+        <version>1.0.2</version>
       </dependency>
 
       <!-- Local database. -->
@@ -293,6 +291,18 @@
         <groupId>com.io7m.darco</groupId>
         <artifactId>com.io7m.darco.sqlite</artifactId>
         <version>${com.io7m.darco.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>tools.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>3.0.3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.dixmont</groupId>
+        <artifactId>com.io7m.dixmont.core</artifactId>
+        <version>3.1.0</version>
       </dependency>
 
       <!-- File selection. -->
@@ -361,6 +371,11 @@
         <artifactId>jqwik-engine</artifactId>
         <version>${net.jqwik.version}</version>
       </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.21.0</version>
+      </dependency>
 
       <dependency>
         <groupId>org.osgi</groupId>
@@ -398,15 +413,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <!-- Generate a site -->
-      <plugin>
-        <groupId>com.io7m.minisite</groupId>
-        <artifactId>com.io7m.minisite.maven_plugin</artifactId>
-        <inherited>false</inherited>
-      </plugin>
-    </plugins>
   </build>
 
 </project>

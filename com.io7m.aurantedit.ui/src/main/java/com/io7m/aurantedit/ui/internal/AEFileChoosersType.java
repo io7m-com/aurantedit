@@ -17,6 +17,7 @@
 
 package com.io7m.aurantedit.ui.internal;
 
+import com.io7m.jwheatsheaf.api.JWFileChooserFilterType;
 import com.io7m.jwheatsheaf.api.JWFileChoosersType;
 import com.io7m.repetoir.core.RPServiceType;
 
@@ -36,4 +37,16 @@ public interface AEFileChoosersType
    */
 
   void setMostRecentDirectory(Path file);
+
+  /**
+   * @return The aurantedit file filter
+   */
+
+  JWFileChooserFilterType aueditFilter();
+
+  /**
+   * @return The aurantium file filter
+   */
+
+  JWFileChooserFilterType aurantiumFilter();
 }

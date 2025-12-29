@@ -25,12 +25,12 @@ module com.io7m.aurantedit.main
 
   requires com.io7m.aurantedit.ui;
 
-  requires com.io7m.jaffirm.core;
   requires com.io7m.jade.api;
+  requires com.io7m.jaffirm.core;
+  requires javafx.controls;
+  requires javafx.fxml;
   requires javafx.graphics;
   requires org.slf4j;
-  requires javafx.fxml;
-  requires javafx.controls;
 
   exports com.io7m.aurantedit.main;
 }

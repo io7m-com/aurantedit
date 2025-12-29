@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback">
+
+  <appender name="STDERR"
+            class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%level %logger %msg%n</pattern>
+    </encoder>
+    <target>System.err</target>
+  </appender>
+
+  <logger name="org.sqlite.core" level="INFO">
+  </logger>
+  <logger name="org.jooq" level="ERROR">
+  </logger>
+  <logger name="com.io7m.blackthorne" level="INFO">
+  </logger>
+  <logger name="com.io7m.trasco" level="INFO">
+  </logger>
+  <logger name="com.io7m.aurantedit.filemodel.internal.AEDatabaseFactory" level="INFO">
+  </logger>
+  <logger name="com.io7m.dixmont" level="INFO">
+  </logger>
+  <logger name="com.io7m.jxe" level="INFO">
+  </logger>
+
+  <root level="TRACE">
+    <appender-ref ref="STDERR"/>
+  </root>
+
+</configuration>

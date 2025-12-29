@@ -29,6 +29,7 @@ import com.io7m.repetoir.core.RPServiceDirectoryType;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +46,42 @@ public final class AEFileChoosers implements AEFileChoosersType
 {
   private static final JWOxygenIconSet OXYGEN_ICON_SET =
     new JWOxygenIconSet();
+
+  private static final JWFileChooserFilterType AUEDIT_FILTER =
+    new JWFileChooserFilterType() {
+
+    @Override
+    public String description()
+    {
+      return "Aurantedit files (*.auedit)";
+    }
+
+    @Override
+    public boolean isAllowed(
+      final Path path)
+    {
+      return Files.isDirectory(path)
+        || path.getFileName().toString().endsWith(".auedit");
+    }
+  };
+
+  private static final JWFileChooserFilterType AURANTIUM_FILTER =
+    new JWFileChooserFilterType() {
+
+      @Override
+      public String description()
+      {
+        return "Aurantium sample maps (*.aam)";
+      }
+
+      @Override
+      public boolean isAllowed(
+        final Path path)
+      {
+        return Files.isDirectory(path)
+          || path.getFileName().toString().endsWith(".aam");
+      }
+    };
 
   private final JWFileChoosersType choosers;
   private final AEDatabaseType database;
@@ -84,6 +121,8 @@ public final class AEFileChoosers implements AEFileChoosersType
       JWFileChooserConfiguration.builder()
         .from(configuration)
         .setFileImageSet(OXYGEN_ICON_SET)
+        .addFileFilters(AUEDIT_FILTER)
+        .addFileFilters(AURANTIUM_FILTER)
         .setRecentFiles(recentFiles);
 
     if (this.mostRecentDirectory != null) {
@@ -139,5 +178,17 @@ public final class AEFileChoosers implements AEFileChoosersType
     final Path file)
   {
     this.mostRecentDirectory = Objects.requireNonNull(file, "file");
+  }
+
+  @Override
+  public JWFileChooserFilterType aueditFilter()
+  {
+    return AUEDIT_FILTER;
+  }
+
+  @Override
+  public JWFileChooserFilterType aurantiumFilter()
+  {
+    return AURANTIUM_FILTER;
   }
 }

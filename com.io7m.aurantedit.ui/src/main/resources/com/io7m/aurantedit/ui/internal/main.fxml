@@ -26,7 +26,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io7m.aurantedit.ui.internal.AEFileView">
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io7m.aurantedit.ui.internal.AEFileView">
    <children>
       <MenuBar>
         <menus>
@@ -44,12 +44,7 @@
                   </MenuItem>
                   <MenuItem fx:id="itemClose" mnemonicParsing="false" onAction="#onCloseSelected" text="%ae.close" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="itemSave" mnemonicParsing="false" onAction="#onSaveSelected" text="%ae.save">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-                  <MenuItem fx:id="itemSaveAs" mnemonicParsing="false" onAction="#onSaveAsSelected" text="%ae.save_as" />
+                  <MenuItem fx:id="itemImport" mnemonicParsing="false" onAction="#onImportSelected" text="%ae.import" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="itemExit" mnemonicParsing="false" onAction="#onExitSelected" text="%ae.exit" />
             </items>
@@ -90,6 +85,7 @@
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
                           </columnConstraints>
                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
                           </rowConstraints>
@@ -97,13 +93,16 @@
                               <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                            </VBox.margin>
                            <children>
-                              <Label text="%ae.name" />
-                              <Label text="%ae.version" GridPane.rowIndex="1" />
-                              <TextField fx:id="metaName" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" styleClass="dataField" GridPane.columnIndex="2" GridPane.columnSpan="3" />
-                              <Button maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" onAction="#onNameSetSelected" prefHeight="32.0" text="%ae.set" GridPane.columnIndex="4" />
-                              <TextField fx:id="metaVersionMajor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <TextField fx:id="metaVersionMinor" layoutX="114.0" layoutY="42.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                              <Button maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" onAction="#onVersionSetSelected" prefHeight="32.0" text="%ae.set" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                              <Label text="%ae.group" />
+                              <TextField fx:id="metaGroup" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" styleClass="dataField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                              <Button maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" prefHeight="32.0" text="%ae.set" GridPane.columnIndex="4" />
+                              <Label text="%ae.name" GridPane.rowIndex="1" />
+                              <TextField fx:id="metaName" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" styleClass="dataField" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                              <Button maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" onAction="#onNameSetSelected" prefHeight="32.0" text="%ae.set" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                              <Label text="%ae.version" GridPane.rowIndex="2" />
+                              <TextField fx:id="metaVersionMajor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <TextField fx:id="metaVersionMinor" layoutX="114.0" layoutY="42.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <Button maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" onAction="#onVersionSetSelected" prefHeight="32.0" text="%ae.set" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                         <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" styleClass="borderedOutset">
@@ -270,7 +269,14 @@
                      </children>
                   </VBox>
                </content></Tab>
-          <Tab fx:id="fileTabKeyAssignments" text="%ae.key_assignments" />
+          <Tab fx:id="fileTabKeyAssignments" text="%ae.key_assignments">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                      <fx:include fx:id="keyAssignmentTabView" source="keyAssignmentTab.fxml" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                    </children>
+                  </AnchorPane>
+               </content></Tab>
         </tabs>
       </TabPane>
       <GridPane>
@@ -293,8 +299,13 @@
             <TextField fx:id="status" editable="false" focusTraversable="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" styleClass="dataField" GridPane.columnIndex="2" />
             <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="24.0" GridPane.columnIndex="4">
                <children>
-                  <ProgressBar fx:id="progress" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" prefWidth="24.0" progress="0.0" />
-                  <Button fx:id="error" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onErrorDetailsSelected" prefHeight="24.0" prefWidth="24.0">
+                  <VBox>
+                     <children>
+                        <ProgressBar fx:id="progressMajor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="12.0" prefWidth="24.0" progress="0.0" />
+                        <ProgressBar fx:id="progressMinor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="12.0" prefWidth="24.0" progress="0.0" />
+                     </children>
+                  </VBox>
+                  <Button fx:id="error" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onErrorDetailsSelected" prefHeight="24.0" prefWidth="24.0" visible="false">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>

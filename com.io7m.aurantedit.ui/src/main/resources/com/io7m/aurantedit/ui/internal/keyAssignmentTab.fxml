@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io7m.aurantedit.ui.internal.key_assignments.AEKeyAssignmentTabView">
+   <items>
+      <VBox>
+         <children>
+            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <children>
+                  <ChoiceBox fx:id="keyAssignmentChoice" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="keyAssignmentAdd" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyAssignmentAddSelected" prefHeight="32.0" prefWidth="32.0" HBox.hgrow="NEVER">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@key-add-32.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="%ae.tooltip.key_assignment.add" />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="keyAssignmentRemove" disable="true" layoutX="60.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyAssignmentRemoveSelected" prefHeight="32.0" prefWidth="32.0" HBox.hgrow="NEVER">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@key-remove-32.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="%ae.tooltip.key_assignment.remove" />
+                     </tooltip>
+                  </Button>
+               </children>
+            </HBox>
+            <Accordion fx:id="keyAssignmentControls" disable="true" styleClass="borderedOutset" VBox.vgrow="ALWAYS">
+              <panes>
+                  <TitledPane text="%ae.clip">
+                     <content>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="%ae.clip" />
+                              <ChoiceBox fx:id="clipChoice" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+                <TitledPane text="%ae.key_range">
+                     <content>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="%ae.start" />
+                              <Slider fx:id="keyStart" blockIncrement="1.0" max="144.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="keyStartField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" />
+                              <Label layoutX="21.0" layoutY="29.0" text="%ae.center" GridPane.rowIndex="1" />
+                              <Slider fx:id="keyCenter" blockIncrement="1.0" layoutX="149.0" layoutY="21.0" max="144.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="keyCenterField" layoutX="653.0" layoutY="21.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Label layoutX="21.0" layoutY="61.0" text="%ae.end" GridPane.rowIndex="2" />
+                              <Slider fx:id="keyEnd" blockIncrement="1.0" layoutX="149.0" layoutY="53.0" max="144.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="keyEndField" layoutX="653.0" layoutY="53.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+                <TitledPane text="%ae.velocity_range">
+                     <content>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="%ae.start" />
+                              <Slider fx:id="velocityStart" blockIncrement="0.001" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="velocityStartField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" />
+                              <Label layoutX="21.0" layoutY="29.0" text="%ae.center" GridPane.rowIndex="1" />
+                              <Slider fx:id="velocityCenter" blockIncrement="0.001" layoutX="149.0" layoutY="21.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="velocityCenterField" layoutX="653.0" layoutY="21.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Label layoutX="21.0" layoutY="61.0" text="%ae.end" GridPane.rowIndex="2" />
+                              <Slider fx:id="velocityEnd" blockIncrement="0.001" layoutX="149.0" layoutY="53.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="velocityEndField" layoutX="653.0" layoutY="53.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+                  <TitledPane layoutX="10.0" layoutY="43.0" text="%ae.amp">
+                     <content>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="%ae.at_key_start" />
+                              <Slider fx:id="ampAtKeyStart" blockIncrement="0.001" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="ampAtKeyStartField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" />
+                              <Label layoutX="21.0" layoutY="29.0" text="%ae.at_key_center" GridPane.rowIndex="1" />
+                              <Slider fx:id="ampAtKeyCenter" blockIncrement="0.001" layoutX="149.0" layoutY="21.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="ampAtKeyCenterField" layoutX="653.0" layoutY="21.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Label layoutX="21.0" layoutY="61.0" text="%ae.at_key_end" GridPane.rowIndex="2" />
+                              <Slider fx:id="ampAtKeyEnd" blockIncrement="0.001" layoutX="149.0" layoutY="53.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="ampAtKeyEndField" layoutX="653.0" layoutY="53.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label layoutX="21.0" layoutY="29.0" text="%ae.at_velocity_start" GridPane.rowIndex="3" />
+                              <Slider fx:id="ampAtVelocityStart" blockIncrement="0.001" layoutX="149.0" layoutY="21.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="ampAtVelocityStartField" layoutX="653.0" layoutY="85.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <Label layoutX="21.0" layoutY="125.0" text="%ae.at_velocity_center" GridPane.rowIndex="4" />
+                              <Slider fx:id="ampAtVelocityCenter" blockIncrement="0.001" layoutX="149.0" layoutY="117.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="ampAtVelocityCenterField" layoutX="653.0" layoutY="117.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Label layoutX="21.0" layoutY="157.0" text="%ae.at_velocity_end" GridPane.rowIndex="5" />
+                              <Slider fx:id="ampAtVelocityEnd" blockIncrement="0.001" layoutX="149.0" layoutY="149.0" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderedOutset" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="ampAtVelocityEndField" layoutX="653.0" layoutY="149.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dataField" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+                  <TitledPane prefHeight="200.0" prefWidth="200.0" text="%ae.flags">
+                     <content>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <CheckBox fx:id="unpitched" mnemonicParsing="false" text="%ae.unpitched" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+              </panes>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Accordion>
+         </children>
+      </VBox>
+      <fx:include fx:id="pianoView" source="keyAssignmentPianoView.fxml" />
+   </items>
+</SplitPane>

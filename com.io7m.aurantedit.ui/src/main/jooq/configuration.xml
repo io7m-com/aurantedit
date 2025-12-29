@@ -7,6 +7,16 @@
     <database>
       <name>org.jooq.meta.extensions.ddl.DDLDatabase</name>
 
+      <forcedTypes>
+        <forcedType>
+          <name>BIGINT</name>
+          <includeExpression>.*</includeExpression>
+          <includeTypes>INTEGER</includeTypes>
+          <nullability>ALL</nullability>
+          <objectType>COLUMN</objectType>
+        </forcedType>
+      </forcedTypes>
+
       <properties>
 
         <!-- Specify the location of your SQL script.
@@ -56,7 +66,7 @@
     </database>
 
     <target>
-      <packageName>com.io7m.aurantedit.ui.internal.database</packageName>
+      <packageName>com.io7m.aurantedit.ui.internal</packageName>
       <directory>target/generated-sources/jooq</directory>
     </target>
   </generator>

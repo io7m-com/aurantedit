@@ -25,8 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.io7m.aurantedit.ui.internal.database.Tables.RECENT_FILES;
-
+import static com.io7m.aurantedit.ui.internal.Tables.RECENT_FILES;
 
 /**
  * List recent files.

@@ -17,6 +17,8 @@
 
 package com.io7m.aurantedit.ui.internal;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.SpinnerValueFactory;
 
 /**
@@ -25,6 +27,7 @@ import javafx.scene.control.SpinnerValueFactory;
 
 public final class AEUnsignedIntValueFactory
   extends SpinnerValueFactory<Long>
+  implements ChangeListener<String>
 {
   /**
    * A spinner value factory for 32-bit unsigned integers.
@@ -51,5 +54,18 @@ public final class AEUnsignedIntValueFactory
     this.setValue(
       StrictMath.clamp(this.getValue() + steps, 0L, 4294967295L)
     );
+  }
+
+  @Override
+  public void changed(
+    final ObservableValue<? extends String> observable,
+    final String oldValue,
+    final String newValue)
+  {
+    try {
+      this.setValue(Long.parseUnsignedLong(newValue));
+    } catch (final NumberFormatException e) {
+      // User entered nonsense.
+    }
   }
 }

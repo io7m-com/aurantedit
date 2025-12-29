@@ -17,31 +17,30 @@
 
 package com.io7m.aurantedit.ui.internal;
 
+import com.io7m.aurantedit.filemodel.AEFileModelEventError;
+import com.io7m.aurantedit.filemodel.AEFileModelEventProgress;
+import com.io7m.aurantedit.filemodel.AEFileModelEventType;
+import com.io7m.aurantedit.filemodel.AEProgress;
 import com.io7m.aurantedit.ui.AEApplication;
 import com.io7m.aurantedit.ui.internal.AEApplicationEventType.ExitRequested;
+import com.io7m.aurantedit.ui.internal.controller.AEController;
+import com.io7m.aurantedit.ui.internal.controller.AEControllerType;
 import com.io7m.aurantedit.ui.internal.database.AEDatabaseType;
 import com.io7m.aurantedit.ui.internal.database.AERecentFileAddType;
-import com.io7m.aurantedit.ui.internal.model.AEController;
-import com.io7m.aurantedit.ui.internal.model.AEControllerEventFailed;
-import com.io7m.aurantedit.ui.internal.model.AEControllerEventInProgress;
-import com.io7m.aurantedit.ui.internal.model.AEControllerEventSucceeded;
-import com.io7m.aurantedit.ui.internal.model.AEControllerEventType;
-import com.io7m.aurantedit.ui.internal.model.AEControllerType;
-import com.io7m.aurantedit.ui.internal.model.AEMetadata;
+import com.io7m.aurantedit.ui.internal.key_assignments.AEKeyAssignmentPianoView;
+import com.io7m.aurantedit.ui.internal.key_assignments.AEKeyAssignmentTabView;
 import com.io7m.aurantium.api.AUClipDeclaration;
-import com.io7m.aurantium.api.AUIdentifier;
+import com.io7m.aurantium.api.AUMetadataValue;
 import com.io7m.brackish.core.WaveView;
 import com.io7m.darco.api.DDatabaseException;
 import com.io7m.jwheatsheaf.api.JWFileChooserAction;
 import com.io7m.jwheatsheaf.api.JWFileChooserConfiguration;
-import com.io7m.lanark.core.RDottedName;
 import com.io7m.miscue.fx.seltzer.MSErrorDialogs;
 import com.io7m.repetoir.core.RPServiceDirectoryType;
-import com.io7m.seltzer.api.SStructuredError;
+import com.io7m.seltzer.api.SStructuredErrorType;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableBooleanValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -76,14 +75,10 @@ import java.util.concurrent.CompletionException;
 import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_REDO;
 import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_REDO_NAMED;
 import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_TITLE;
-import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_TITLE_FILE_SAVED;
-import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_TITLE_FILE_UNSAVED;
 import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_UNDO;
 import static com.io7m.aurantedit.ui.internal.AEStringConstants.AE_UNDO_NAMED;
 import static com.io7m.aurantedit.ui.internal.AEUIThread.onUIThread;
 import static com.io7m.aurantedit.ui.internal.AEUnit.UNIT;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 /**
  * A file view.
@@ -98,11 +93,9 @@ public final class AEFileView implements AEViewType
   private final AEStringsType strings;
   private final AEWaveModel waveModel;
   private final Stage stage;
-  private final ChangeListener<Boolean> unsavedChangeListener;
   private final AEVersionSetDialogs versionSet;
   private final ChangeListener<Optional<String>> undoListener;
   private final ChangeListener<Optional<String>> redoListener;
-  private final AESaveConfirmDialogs saveDialogs;
   private final RPServiceDirectoryType services;
   private final AEControllerType controller;
   private final AECreateDialogs createDialogs;
@@ -112,6 +105,7 @@ public final class AEFileView implements AEViewType
   private final AEFileWindowTrackerType windowTracker;
   private final AEPerpetualSubscriber<AEApplicationEventType> appEventSubscriber;
   private final AEApplicationEventsType appEvents;
+  private final AEImportDialogs importDialogs;
 
   @FXML private MenuItem undo;
   @FXML private MenuItem redo;
@@ -119,17 +113,27 @@ public final class AEFileView implements AEViewType
   @FXML private Button error;
 
   @FXML private TextField status;
-  @FXML private ProgressBar progress;
+  @FXML private ProgressBar progressMajor;
+  @FXML private ProgressBar progressMinor;
 
+  /*
+   * Metadata tab.
+   */
+
+  @FXML private TextField metaGroup;
   @FXML private TextField metaName;
   @FXML private TextField metaVersionMajor;
   @FXML private TextField metaVersionMinor;
   @FXML private TextField metaSearch;
   @FXML private Button metaAdd;
   @FXML private Button metaRemove;
-  @FXML private TableView<AEMetadata> metaTable;
-  @FXML private TableColumn<AEMetadata, String> metaTableName;
-  @FXML private TableColumn<AEMetadata, String> metaTableValue;
+  @FXML private TableView<AUMetadataValue> metaTable;
+  @FXML private TableColumn<AUMetadataValue, String> metaTableName;
+  @FXML private TableColumn<AUMetadataValue, String> metaTableValue;
+
+  /*
+   * Clips tab.
+   */
 
   @FXML private Button clipAdd;
   @FXML private Button clipRemove;
@@ -144,8 +148,11 @@ public final class AEFileView implements AEViewType
   @FXML private TextField fieldClipSampleDepth;
   @FXML private TextField fieldClipChannels;
   @FXML private TextField fieldClipSize;
-
   @FXML private AnchorPane waveCanvasHolder;
+
+  /*
+   * Menu and tabs.
+   */
 
   @FXML private TabPane fileTabs;
   @FXML private Tab fileTabMetadata;
@@ -153,9 +160,8 @@ public final class AEFileView implements AEViewType
   @FXML private Tab fileTabKeyAssignments;
   @FXML private MenuItem itemNew;
   @FXML private MenuItem itemOpen;
-  @FXML private MenuItem itemSave;
-  @FXML private MenuItem itemSaveAs;
   @FXML private MenuItem itemClose;
+  @FXML private MenuItem itemImport;
   @FXML private MenuItem itemExit;
 
   @FXML private TableView<AUClipDeclaration> clipTable;
@@ -165,18 +171,20 @@ public final class AEFileView implements AEViewType
 
   private Set<TextField> fieldsClip;
   private WaveView waveView;
-  private SStructuredError<String> errorLast;
+  private SStructuredErrorType<String> errorLast;
 
   /**
    * A file view.
    *
-   * @param inServices The service directory
-   * @param inStage    The stage
+   * @param inServices   The service directory
+   * @param inStage      The stage
+   * @param inController The controller
    */
 
   public AEFileView(
     final RPServiceDirectoryType inServices,
-    final Stage inStage)
+    final Stage inStage,
+    final AEControllerType inController)
   {
     this.services =
       Objects.requireNonNull(inServices, "services");
@@ -192,8 +200,6 @@ public final class AEFileView implements AEViewType
       inServices.requireService(AEVersionSetDialogs.class);
     this.nameSet =
       inServices.requireService(AENameSetDialogs.class);
-    this.saveDialogs =
-      inServices.requireService(AESaveConfirmDialogs.class);
     this.createDialogs =
       inServices.requireService(AECreateDialogs.class);
     this.metadataEditDialogs =
@@ -202,9 +208,11 @@ public final class AEFileView implements AEViewType
       inServices.requireService(AEFileWindowTrackerType.class);
     this.appEvents =
       inServices.requireService(AEApplicationEventsType.class);
+    this.importDialogs =
+      inServices.requireService(AEImportDialogs.class);
 
     this.controller =
-      AEController.empty(this.strings);
+      Objects.requireNonNull(inController, "inController");
     this.waveModel =
       new AEWaveModel();
 
@@ -230,12 +238,6 @@ public final class AEFileView implements AEViewType
         }
       };
 
-    this.unsavedChangeListener =
-      (observable, oldValue, newValue) -> {
-        this.itemSave.setDisable(newValue != TRUE);
-        this.setWindowTitle();
-      };
-
     this.stage.addEventFilter(
       WindowEvent.WINDOW_CLOSE_REQUEST,
       event -> {
@@ -249,30 +251,6 @@ public final class AEFileView implements AEViewType
       new AEPerpetualSubscriber<>(this::onApplicationEvent);
     this.appEvents.events()
       .subscribe(this.appEventSubscriber);
-  }
-
-  private void onApplicationEvent(
-    final AEApplicationEventType event)
-  {
-    LOG.debug("onApplicationEvent: {}", event);
-
-    switch (event) {
-      case final ExitRequested ignored -> {
-        Platform.runLater(this::onApplicationEventExitRequested);
-      }
-    }
-  }
-
-  private void onApplicationEventExitRequested()
-  {
-    this.isSaveRequired()
-      .thenCompose(saveRequired -> {
-        if (saveRequired) {
-          return this.tryAskAboutSaving().thenCompose(__ -> this.tryExit());
-        } else {
-          return this.tryExit();
-        }
-      }).exceptionally(this::logException);
   }
 
   /**
@@ -303,11 +281,22 @@ public final class AEFileView implements AEViewType
     final var loader =
       new FXMLLoader(xml, resources);
 
+    final var controller =
+      AEController.empty(strings);
+
     final AEControllerFactoryType<AEViewType> controllers =
       AEControllerFactoryMapped.create(
         Map.entry(
           AEFileView.class,
-          () -> new AEFileView(services, stage)
+          () -> new AEFileView(services, stage, controller)
+        ),
+        Map.entry(
+          AEKeyAssignmentTabView.class,
+          () -> new AEKeyAssignmentTabView(services, controller)
+        ),
+        Map.entry(
+          AEKeyAssignmentPianoView.class,
+          () -> new AEKeyAssignmentPianoView(controller)
         )
       );
 
@@ -322,30 +311,21 @@ public final class AEFileView implements AEViewType
     return new AEViewAndStage<>(loader.getController(), stage);
   }
 
+  private void onApplicationEvent(
+    final AEApplicationEventType event)
+  {
+    LOG.debug("onApplicationEvent: {}", event);
+
+    switch (event) {
+      case final ExitRequested ignored -> {
+        this.tryExit();
+      }
+    }
+  }
+
   private void setWindowTitle()
   {
-    final var fileOpt =
-      this.controller.file()
-        .getValue();
 
-    if (this.controller.isSaveRequired().get()) {
-      if (fileOpt.isPresent()) {
-        this.stage.setTitle(
-          this.strings.format(AE_TITLE_FILE_UNSAVED, fileOpt.get())
-        );
-      } else {
-        this.stage.setTitle(this.strings.format(AE_TITLE));
-      }
-      return;
-    }
-
-    if (fileOpt.isPresent()) {
-      this.stage.setTitle(
-        this.strings.format(AE_TITLE_FILE_SAVED, fileOpt.get())
-      );
-    } else {
-      this.stage.setTitle(this.strings.format(AE_TITLE));
-    }
   }
 
   @Override
@@ -367,79 +347,71 @@ public final class AEFileView implements AEViewType
 
     this.status.setText(AEVersionStrings.VERSION);
 
-    this.waveView = new WaveView();
-    this.waveView.setWaveModel(this.waveModel);
-    this.waveCanvasHolder.getChildren().add(this.waveView);
-
-    AnchorPane.setBottomAnchor(this.waveView, 0.0);
-    AnchorPane.setLeftAnchor(this.waveView, 0.0);
-    AnchorPane.setRightAnchor(this.waveView, 0.0);
-    AnchorPane.setTopAnchor(this.waveView, 0.0);
-
     this.fileTabs.setDisable(true);
     this.fileTabs.setVisible(false);
 
-    this.itemSave.setDisable(true);
-    this.itemSaveAs.setDisable(true);
     this.itemClose.setDisable(true);
 
-    this.initializeMetaTable();
-    this.initializeClipTable();
+    this.initializeMetaTab();
+    this.initializeClipsTab();
 
     this.controller.file()
       .addListener((observable, oldValue, newValue) -> {
         if (newValue.isPresent()) {
           this.fileTabs.setDisable(false);
           this.fileTabs.setVisible(true);
-          this.itemSaveAs.setDisable(false);
           this.itemClose.setDisable(false);
           this.setWindowTitle();
         } else {
           this.fileTabs.setDisable(true);
           this.fileTabs.setVisible(false);
-          this.itemSaveAs.setDisable(true);
           this.itemClose.setDisable(true);
           this.setWindowTitle();
         }
       });
 
-    this.controller.isSaveRequired()
-      .addListener(this.unsavedChangeListener);
     this.controller.undoState()
       .addListener(this.undoListener);
     this.controller.redoState()
       .addListener(this.redoListener);
 
-    this.metaName.textProperty()
-      .bind(
-        this.controller.identifier()
-          .map(AUIdentifier::name)
-          .map(RDottedName::value)
-      );
-
-    this.controller.identifier()
-      .addListener((___, oldId, newId) -> {
-        this.metaVersionMajor.setText(
-          Long.toUnsignedString(
-            Integer.toUnsignedLong(newId.version().major())
-          )
-        );
-        this.metaVersionMinor.setText(
-          Long.toUnsignedString(
-            Integer.toUnsignedLong(newId.version().minor())
-          )
-        );
-      });
-
     this.controller.events()
-      .subscribe(new AEPerpetualSubscriber<>(this::onControllerEvent));
+      .subscribe(new AEPerpetualSubscriber<>(this::onFileModelEvent));
 
     this.error.setDisable(true);
     this.error.setVisible(false);
   }
 
-  private void initializeMetaTable()
+  /**
+   * Configure the metadata tab.
+   */
+
+  private void initializeMetaTab()
   {
+    this.controller.identifier()
+      .addListener((_, _, newIdOpt) -> {
+        if (newIdOpt.isPresent()) {
+          final var newId = newIdOpt.get();
+          this.metaGroup.setText(newId.group().value());
+          this.metaName.setText(newId.name().value());
+          this.metaVersionMajor.setText(
+            Long.toUnsignedString(
+              Integer.toUnsignedLong(newId.version().major())
+            )
+          );
+          this.metaVersionMinor.setText(
+            Long.toUnsignedString(
+              Integer.toUnsignedLong(newId.version().minor())
+            )
+          );
+        } else {
+          this.metaGroup.setText("");
+          this.metaName.setText("");
+          this.metaVersionMajor.setText("");
+          this.metaVersionMinor.setText("");
+        }
+      });
+
     this.metaTableName.setSortable(true);
     this.metaTableName.setReorderable(false);
     this.metaTableName.setCellValueFactory(param -> {
@@ -470,8 +442,21 @@ public final class AEFileView implements AEViewType
       .bind(this.metaTable.comparatorProperty());
   }
 
-  private void initializeClipTable()
+  /**
+   * Configure the clips tab.
+   */
+
+  private void initializeClipsTab()
   {
+    this.waveView = new WaveView();
+    this.waveView.setWaveModel(this.waveModel);
+    this.waveCanvasHolder.getChildren().add(this.waveView);
+
+    AnchorPane.setBottomAnchor(this.waveView, 0.0);
+    AnchorPane.setLeftAnchor(this.waveView, 0.0);
+    AnchorPane.setRightAnchor(this.waveView, 0.0);
+    AnchorPane.setTopAnchor(this.waveView, 0.0);
+
     this.clipTableID.setSortable(true);
     this.clipTableID.setReorderable(false);
     this.clipTableID.setCellValueFactory(param -> {
@@ -592,61 +577,20 @@ public final class AEFileView implements AEViewType
     }
 
     final var chosen = chosenOpt.get();
-    this.addRecentFile(chosen.file());
+    this.addRecentFile(chosen);
 
     final var existingFileOpt =
       this.controller.file().getValue();
 
     if (existingFileOpt.isEmpty()) {
-      this.controller.create(chosen.file(), chosen.identifier());
+      this.controller.create(chosen);
     } else {
       final var viewAndStage =
-        AEFileView.openForStage(this.services, new Stage());
-      viewAndStage.view().controller.create(chosen.file(), chosen.identifier());
+        openForStage(this.services, new Stage());
+      viewAndStage.view().controller.create(chosen);
       viewAndStage.stage().show();
     }
     return UNIT;
-  }
-
-  private CompletableFuture<AEUnit> tryAskAboutSaving()
-  {
-    return onUIThread(() -> {
-      final var viewAndStage =
-        this.saveDialogs.createDialog(
-          this.controller.file()
-            .get()
-            .orElseThrow()
-        );
-
-      LOG.debug("Asking about saving...");
-      viewAndStage.stage().showAndWait();
-      return viewAndStage.view().result();
-    }).thenCompose(confirm -> {
-      return switch (confirm) {
-        case SAVE -> {
-          LOG.debug("Saving.");
-          yield this.controller.save();
-        }
-        case DISCARD -> {
-          LOG.debug("Discarding.");
-          yield CompletableFuture.completedFuture(UNIT);
-        }
-        case CANCEL -> {
-          LOG.debug("Cancelling.");
-          throw new CancellationException();
-        }
-      };
-    });
-  }
-
-  private CompletableFuture<Boolean> isSaveRequired()
-  {
-    return CompletableFuture.completedFuture(
-      Optional.ofNullable(this.controller)
-        .map(AEControllerType::isSaveRequired)
-        .map(ObservableBooleanValue::get)
-        .orElse(FALSE)
-    );
   }
 
   private AEUnit tryOpenActual()
@@ -671,11 +615,13 @@ public final class AEFileView implements AEViewType
       this.controller.file().getValue();
 
     if (existingFileOpt.isEmpty()) {
-      this.controller.open(file);
+      LOG.debug("Opening file in the current controller.");
+      this.controller.open(file, false);
     } else {
+      LOG.debug("Opening file in a new stage and controller.");
       final var viewAndStage =
-        AEFileView.openForStage(this.services, new Stage());
-      viewAndStage.view().controller.open(file);
+        openForStage(this.services, new Stage());
+      viewAndStage.view().controller.open(file, false);
       viewAndStage.stage().show();
     }
 
@@ -690,17 +636,19 @@ public final class AEFileView implements AEViewType
   private CompletableFuture<AEUnit> tryClose()
   {
     LOG.debug("Closing...");
-    this.controller.close();
+    this.controller.closeFile();
+
     if (this.windowTracker.fileWindowsOpen() > 1) {
       this.windowTracker.closeWindow(this.stage);
     }
+
     return CompletableFuture.completedFuture(UNIT);
   }
 
   private CompletableFuture<AEUnit> tryExit()
   {
     LOG.debug("Exiting...");
-    this.controller.close();
+    this.controller.closeFile();
     this.windowTracker.closeWindow(this.stage);
     return CompletableFuture.completedFuture(UNIT);
   }
@@ -718,43 +666,9 @@ public final class AEFileView implements AEViewType
   }
 
   @FXML
-  private void onSaveSelected()
-  {
-    this.controller.save();
-  }
-
-  @FXML
-  private void onSaveAsSelected()
-  {
-    final var chooser =
-      this.choosers.create(
-        JWFileChooserConfiguration.builder()
-          .setAction(JWFileChooserAction.CREATE)
-          .setConfirmFileSelection(true)
-          .build()
-      );
-
-    final var chosen = chooser.showAndWait();
-    if (chosen.isEmpty()) {
-      return;
-    }
-
-    final var file = chosen.get(0);
-    this.addRecentFile(file);
-    this.controller.saveAs(file);
-  }
-
-  @FXML
   private void onCloseSelected()
   {
-    this.isSaveRequired()
-      .thenCompose(saveRequired -> {
-        if (saveRequired) {
-          return this.tryAskAboutSaving().thenCompose(__ -> this.tryClose());
-        } else {
-          return this.tryClose();
-        }
-      }).exceptionally(this::logException);
+    this.tryClose();
   }
 
   @FXML
@@ -854,7 +768,9 @@ public final class AEFileView implements AEViewType
     final var view = viewAndStage.view();
     view.setDataInitial(meta);
     viewAndStage.stage().showAndWait();
-    view.result().ifPresent(this.controller::metadataReplace);
+    view.result().ifPresent(metadataReplaceWith -> {
+      this.controller.metadataReplace(meta, metadataReplaceWith);
+    });
   }
 
   @FXML
@@ -867,12 +783,13 @@ public final class AEFileView implements AEViewType
     final var view = viewAndStage.view();
     view.setNameInitial(
       this.controller.identifier()
+        .getValue()
         .get()
         .name()
     );
 
     viewAndStage.stage().showAndWait();
-    view.result().ifPresent(this.controller::setName);
+    // view.result().ifPresent(this.controller::setName);
   }
 
   @FXML
@@ -885,6 +802,7 @@ public final class AEFileView implements AEViewType
     final var view = viewAndStage.view();
     view.setVersionInitial(
       this.controller.identifier()
+        .getValue()
         .get()
         .version()
     );
@@ -905,29 +823,24 @@ public final class AEFileView implements AEViewType
     this.controller.redo();
   }
 
-  private void onControllerEvent(
-    final AEControllerEventType event)
+  private void onFileModelEvent(
+    final AEFileModelEventType event)
   {
     Platform.runLater(() -> {
       switch (event) {
-        case final AEControllerEventFailed failed -> {
-          this.progress.setProgress(0.0);
-          this.status.setText(failed.message());
+        case final AEFileModelEventError eventError -> {
+          this.progressMajor.setProgress(0.0);
+          this.progressMinor.setProgress(0.0);
+          this.status.setText(eventError.message());
           this.error.setDisable(false);
           this.error.setVisible(true);
-          this.errorLast = failed.error();
+          this.errorLast = eventError;
         }
-        case final AEControllerEventInProgress inProgress -> {
-          this.progress.setProgress(inProgress.progress());
-          this.status.setText(inProgress.message());
-          this.error.setDisable(true);
-          this.error.setVisible(false);
-        }
-        case final AEControllerEventSucceeded success -> {
-          this.progress.setProgress(0.0);
-          this.status.setText(success.message());
-          this.error.setDisable(true);
-          this.error.setVisible(false);
+        case final AEFileModelEventProgress eventProgress -> {
+          final AEProgress p = eventProgress.progress();
+          this.progressMajor.setProgress(p.taskProgress());
+          this.progressMinor.setProgress(p.subTaskProgress());
+          this.status.setText("%s (%s)".formatted(p.task(), p.subTask()));
         }
       }
     });
@@ -970,6 +883,22 @@ public final class AEFileView implements AEViewType
     newStage.setResizable(false);
     newStage.setTitle("Aurantedit");
     newStage.show();
+  }
+
+  @FXML
+  private void onImportSelected()
+    throws Exception
+  {
+    final var dialog =
+      this.importDialogs.openDialogAndWait(UNIT);
+    final var result =
+      dialog.result();
+
+    if (result.isEmpty()) {
+      return;
+    }
+
+    this.controller.importNow(result.get());
   }
 
   private void addRecentFile(

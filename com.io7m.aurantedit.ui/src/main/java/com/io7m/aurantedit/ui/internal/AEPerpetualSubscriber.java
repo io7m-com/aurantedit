@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 
 public final class AEPerpetualSubscriber<T> implements Flow.Subscriber<T>
 {
-  private final Consumer<T> onEvent;
+  private volatile Consumer<T> onEvent;
 
   /**
    * A perpetual event subscriber.
@@ -62,12 +62,12 @@ public final class AEPerpetualSubscriber<T> implements Flow.Subscriber<T>
   public void onError(
     final Throwable throwable)
   {
-
+    this.onEvent = null;
   }
 
   @Override
   public void onComplete()
   {
-
+    this.onEvent = null;
   }
 }

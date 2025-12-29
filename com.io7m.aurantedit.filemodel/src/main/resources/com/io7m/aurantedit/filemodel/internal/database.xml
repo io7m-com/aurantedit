@@ -1,0 +1,154 @@
+<Schemas xmlns="urn:com.io7m.trasco.database.statements:1:0">
+
+  <Schema versionCurrent="0">
+    <Comment>
+      The schema version table stores the current version of the database
+      schema. Implementations are expected to query this table on connecting to
+      the database in order to ensure that the calling code is compatible with
+      the tables in the database.
+    </Comment>
+
+    <Statement><![CDATA[
+CREATE TABLE schema_version (
+  version_lock            INTEGER NOT NULL DEFAULT 1,
+  version_application_id  TEXT    NOT NULL,
+  version_number          INTEGER NOT NULL,
+
+  CONSTRAINT schema_version_check_lock_primary
+    PRIMARY KEY (version_lock),
+
+  CONSTRAINT schema_version_check_lock_locked
+    CHECK (version_lock = 1)
+) STRICT
+]]></Statement>
+  </Schema>
+
+  <Schema versionCurrent="1">
+    <Comment>
+      The identifier table stores the identifier for the file. The table is restricted to
+      a single row.
+    </Comment>
+
+    <Statement><![CDATA[
+CREATE TABLE identifier (
+  id_lock              INTEGER NOT NULL DEFAULT 1,
+  id_group             TEXT    NOT NULL,
+  id_name              TEXT    NOT NULL,
+  id_version_major     INTEGER NOT NULL,
+  id_version_minor     INTEGER NOT NULL,
+
+  CONSTRAINT identifier_check_lock_primary
+    PRIMARY KEY (id_lock),
+
+  CONSTRAINT identifier_check_lock_locked
+    CHECK (id_lock = 1)
+) STRICT
+]]></Statement>
+
+    <Statement><![CDATA[
+CREATE TABLE clips (
+  clip_id                INTEGER NOT NULL PRIMARY KEY,
+  clip_name              TEXT    NOT NULL,
+  clip_format            TEXT    NOT NULL,
+  clip_sample_rate       INTEGER NOT NULL,
+  clip_sample_depth      INTEGER NOT NULL,
+  clip_channels          INTEGER NOT NULL,
+  clip_endianness        TEXT    NOT NULL,
+  clip_hash_algorithm    TEXT    NOT NULL,
+  clip_hash_value        TEXT    NOT NULL,
+  clip_blob              BLOB,
+  clip_loop_range_lower  INTEGER,
+  clip_loop_range_upper  INTEGER
+) STRICT
+]]></Statement>
+
+    <Statement><![CDATA[
+CREATE TABLE key_assignments (
+  ka_id                           INTEGER NOT NULL PRIMARY KEY,
+  ka_value_start                  INTEGER NOT NULL,
+  ka_value_center                 INTEGER NOT NULL,
+  ka_value_end                    INTEGER NOT NULL,
+  ka_clip_id                      INTEGER NOT NULL,
+  ka_amplitude_at_key_start       REAL NOT NULL,
+  ka_amplitude_at_key_center      REAL NOT NULL,
+  ka_amplitude_at_key_end         REAL NOT NULL,
+  ka_at_velocity_start            REAL NOT NULL,
+  ka_at_velocity_center           REAL NOT NULL,
+  ka_at_velocity_end              REAL NOT NULL,
+  ka_amplitude_at_velocity_start  REAL NOT NULL,
+  ka_amplitude_at_velocity_center REAL NOT NULL,
+  ka_amplitude_at_velocity_end    REAL NOT NULL,
+  ka_flags                        TEXT NOT NULL,
+
+  CONSTRAINT key_assignments_clip_exists
+    FOREIGN KEY (ka_clip_id) REFERENCES clips (clip_id),
+
+  -- Constraints taken from the Aurantium spec.
+  CONSTRAINT key_assignments_check_order_value
+    CHECK (ka_value_start  <= ka_value_center
+       AND ka_value_center <= ka_value_end
+       AND ka_value_end    <= 294967295),
+
+  CONSTRAINT key_assignments_check_amplitude_at_velocity_start_normalized
+    CHECK (0 <= ka_amplitude_at_velocity_start AND ka_amplitude_at_velocity_start <= 1),
+  CONSTRAINT key_assignments_check_amplitude_at_velocity_center_normalized
+    CHECK (0 <= ka_amplitude_at_velocity_center AND ka_amplitude_at_velocity_center <= 1),
+  CONSTRAINT key_assignments_check_amplitude_at_velocity_end_normalized
+    CHECK (0 <= ka_amplitude_at_velocity_end AND ka_amplitude_at_velocity_end <= 1),
+
+  CONSTRAINT key_assignments_check_order_at_velocity_start
+    CHECK (ka_at_velocity_start  <= ka_at_velocity_center
+       AND ka_at_velocity_center <= ka_at_velocity_end),
+
+  CONSTRAINT key_assignments_check_at_velocity_start_normalized
+    CHECK (0 <= ka_at_velocity_start AND ka_at_velocity_start <= 1),
+  CONSTRAINT key_assignments_check_at_velocity_center_normalized
+    CHECK (0 <= ka_at_velocity_center AND ka_at_velocity_center <= 1),
+  CONSTRAINT key_assignments_check_at_velocity_end_normalized
+    CHECK (0 <= ka_at_velocity_end AND ka_at_velocity_end <= 1),
+
+  CONSTRAINT key_assignments_check_amplitude_at_key_start_normalized
+    CHECK (0 <= ka_amplitude_at_key_start AND ka_amplitude_at_key_start <= 1),
+  CONSTRAINT key_assignments_check_amplitude_at_key_center_normalized
+    CHECK (0 <= ka_amplitude_at_key_center AND ka_amplitude_at_key_center <= 1),
+  CONSTRAINT key_assignments_check_amplitude_at_key_end_normalized
+    CHECK (0 <= ka_amplitude_at_key_end AND ka_amplitude_at_key_end <= 1)
+
+) STRICT
+]]></Statement>
+
+    <Statement><![CDATA[
+CREATE TABLE metadata (
+  metadata_key   TEXT NOT NULL,
+  metadata_value TEXT NOT NULL
+) STRICT
+]]></Statement>
+
+    <Comment>
+      The undo table stores the undo history.
+    </Comment>
+
+    <Statement><![CDATA[
+CREATE TABLE undo (
+  undo_id            INTEGER PRIMARY KEY NOT NULL,
+  undo_description   TEXT                NOT NULL,
+  undo_time          INTEGER             NOT NULL,
+  undo_data          BLOB                NOT NULL
+) STRICT
+]]></Statement>
+
+    <Comment>
+      The redo table stores the redo history.
+    </Comment>
+
+    <Statement><![CDATA[
+CREATE TABLE redo (
+  redo_id            INTEGER PRIMARY KEY NOT NULL,
+  redo_description   TEXT                NOT NULL,
+  redo_time          INTEGER             NOT NULL,
+  redo_data          BLOB                NOT NULL
+) STRICT
+]]></Statement>
+  </Schema>
+
+</Schemas>

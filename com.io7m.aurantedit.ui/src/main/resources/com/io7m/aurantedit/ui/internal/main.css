@@ -184,6 +184,17 @@
   -fx-border-width:  1;
 }
 
+.keyAssignmentBackground
+{
+  -fx-background-color: #444444;
+}
+.keyAssignmentKeyText
+{
+  -fx-text-fill: #ffffff;
+  -fx-font-size: 9pt;
+  -fx-font-family: "Monospaced";
+}
+
 /*
  * Miscue error CSS.
  */

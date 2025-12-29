@@ -17,7 +17,7 @@
 
 package com.io7m.aurantedit.ui.internal;
 
-import com.io7m.aurantedit.ui.internal.model.AEMetadata;
+import com.io7m.aurantium.api.AUMetadataValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -35,7 +35,7 @@ import java.util.ResourceBundle;
 public final class AEMetadataEditView implements AEViewType
 {
   private final Stage stage;
-  private Optional<AEMetadata> result;
+  private Optional<AUMetadataValue> result;
 
   @FXML private TextField name;
   @FXML private TextField value;
@@ -60,7 +60,7 @@ public final class AEMetadataEditView implements AEViewType
    * @return The result
    */
 
-  public Optional<AEMetadata> result()
+  public Optional<AUMetadataValue> result()
   {
     return this.result;
   }
@@ -72,7 +72,7 @@ public final class AEMetadataEditView implements AEViewType
    */
 
   public void setDataInitial(
-    final AEMetadata data)
+    final AUMetadataValue data)
   {
     this.name.setText(data.name());
     this.value.setText(data.value());
@@ -90,7 +90,7 @@ public final class AEMetadataEditView implements AEViewType
   private void onUpdateSelected()
   {
     this.result = Optional.of(
-      new AEMetadata(
+      new AUMetadataValue(
         this.name.getText().trim(),
         this.value.getText().trim()
       )

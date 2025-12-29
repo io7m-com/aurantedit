@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.io7m.ivoirax.core.IvHorizontalPiano?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io7m.aurantedit.ui.internal.key_assignments.AEKeyAssignmentPianoView">
+  <children>
+    <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <ScrollPane fitToHeight="true">
+          <content>
+                  <AnchorPane>
+                     <children>
+                <Pane fx:id="keyAssignmentNodeArea" layoutX="0.5" styleClass="keyAssignmentBackground" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <IvHorizontalPiano fx:id="piano" layoutX="0.5" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+          </content>
+        </ScrollPane>
+            <GridPane mouseTransparent="true" StackPane.alignment="TOP_LEFT">
+               <StackPane.margin>
+                  <Insets left="8.0" top="4.0" />
+               </StackPane.margin>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="128.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="64.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+              <Label fx:id="keyOverText" styleClass="keyAssignmentKeyText" text="0" GridPane.columnIndex="2" />
+                  <Label styleClass="keyAssignmentKeyText" text="%ae.key" />
+                  <Label styleClass="keyAssignmentKeyText" text="%ae.key_assignment" GridPane.rowIndex="1" />
+                  <Label fx:id="keyAssignmentOverText" styleClass="keyAssignmentKeyText" text="0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Label layoutX="10.0" layoutY="14.0" styleClass="keyAssignmentKeyText" text=":" GridPane.columnIndex="1" />
+                  <Label layoutX="138.0" layoutY="14.0" styleClass="keyAssignmentKeyText" text=":" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+      </children>
+    </StackPane>
+  </children>
+</AnchorPane>

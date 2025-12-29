@@ -23,7 +23,7 @@ import org.jooq.DSLContext;
 import java.nio.file.Path;
 import java.time.Instant;
 
-import static com.io7m.aurantedit.ui.internal.database.Tables.RECENT_FILES;
+import static com.io7m.aurantedit.ui.internal.Tables.RECENT_FILES;
 
 /**
  * Add recent files.

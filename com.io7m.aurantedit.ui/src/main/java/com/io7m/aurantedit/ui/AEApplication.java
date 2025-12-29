@@ -25,18 +25,21 @@ import com.io7m.aurantedit.ui.internal.AEFileChoosersType;
 import com.io7m.aurantedit.ui.internal.AEFileView;
 import com.io7m.aurantedit.ui.internal.AEFileWindowTracker;
 import com.io7m.aurantedit.ui.internal.AEFileWindowTrackerType;
+import com.io7m.aurantedit.ui.internal.AEImportDialogs;
 import com.io7m.aurantedit.ui.internal.AEMetadataEditDialogs;
 import com.io7m.aurantedit.ui.internal.AENameSetDialogs;
-import com.io7m.aurantedit.ui.internal.AESaveConfirmDialogs;
 import com.io7m.aurantedit.ui.internal.AEStrings;
 import com.io7m.aurantedit.ui.internal.AEStringsType;
 import com.io7m.aurantedit.ui.internal.AEVersionSetDialogs;
 import com.io7m.aurantedit.ui.internal.database.AEDatabaseConfiguration;
 import com.io7m.aurantedit.ui.internal.database.AEDatabaseFactory;
 import com.io7m.aurantedit.ui.internal.database.AEDatabaseType;
+import com.io7m.aurantedit.ui.internal.key_assignments.AEKeyAssignmentAddDialogs;
 import com.io7m.darco.api.DDatabaseCreate;
 import com.io7m.darco.api.DDatabaseTelemetryNoOp;
 import com.io7m.darco.api.DDatabaseUpgrade;
+import com.io7m.darco.api.DRoles;
+import com.io7m.darco.api.DUsernamePassword;
 import com.io7m.jade.api.ApplicationDirectoriesType;
 import com.io7m.repetoir.core.RPServiceDirectory;
 import javafx.application.Application;
@@ -45,8 +48,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The main application class responsible for starting up the "main" view.
@@ -88,11 +93,15 @@ public final class AEApplication extends Application
       new AEDatabaseFactory()
         .open(
           new AEDatabaseConfiguration(
+            Optional.empty(),
             DDatabaseTelemetryNoOp.get(),
             DDatabaseCreate.CREATE_DATABASE,
             DDatabaseUpgrade.UPGRADE_DATABASE,
             this.directories.configurationDirectory()
-              .resolve("database.db")
+              .resolve("database.db"),
+            DRoles.of(List.of(
+              new DUsernamePassword("nobody", "")
+            ))
           ),
           event -> {
 
@@ -105,15 +114,17 @@ public final class AEApplication extends Application
     services.register(
       AEStringsType.class, strings);
     services.register(
+      AEImportDialogs.class, new AEImportDialogs(services));
+    services.register(
       AEVersionSetDialogs.class, new AEVersionSetDialogs(services));
     services.register(
       AENameSetDialogs.class, new AENameSetDialogs(services));
     services.register(
-      AESaveConfirmDialogs.class, new AESaveConfirmDialogs(services));
-    services.register(
       AECreateDialogs.class, new AECreateDialogs(services));
     services.register(
       AEMetadataEditDialogs.class, new AEMetadataEditDialogs(services));
+    services.register(
+      AEKeyAssignmentAddDialogs.class, new AEKeyAssignmentAddDialogs(services));
     services.register(
       AEApplicationEventsType.class, AEApplicationEvents.create());
 

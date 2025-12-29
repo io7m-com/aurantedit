@@ -20,25 +20,33 @@ package com.io7m.aurantedit.ui.internal.database;
 import com.io7m.darco.api.DDatabaseCreate;
 import com.io7m.darco.api.DDatabaseTelemetryType;
 import com.io7m.darco.api.DDatabaseUpgrade;
+import com.io7m.darco.api.DRoles;
+import com.io7m.darco.api.DUsernamePassword;
 import com.io7m.darco.sqlite.DSDatabaseConfigurationType;
+import com.io7m.jxe.core.JXEHardenedSAXParsers;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The database configuration.
  *
+ * @param saxParsers The SAX parsers
  * @param telemetry The telemetry
  * @param create    The database creation flag
  * @param upgrade   The database upgrade flag
  * @param file      The database file
+ * @param roles The database roles
  */
 
 public record AEDatabaseConfiguration(
+  Optional<JXEHardenedSAXParsers> saxParsers,
   DDatabaseTelemetryType telemetry,
   DDatabaseCreate create,
   DDatabaseUpgrade upgrade,
-  Path file)
+  Path file,
+  DRoles roles)
   implements DSDatabaseConfigurationType
 {
   /**
@@ -52,9 +60,17 @@ public record AEDatabaseConfiguration(
 
   public AEDatabaseConfiguration
   {
+    Objects.requireNonNull(saxParsers, "saxParsers");
     Objects.requireNonNull(telemetry, "telemetry");
     Objects.requireNonNull(create, "create");
     Objects.requireNonNull(upgrade, "upgrade");
     Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(roles, "roles");
+  }
+
+  @Override
+  public DUsernamePassword defaultRole()
+  {
+    return new DUsernamePassword("nobody", "");
   }
 }

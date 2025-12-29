@@ -20,6 +20,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.aurantedit.filemodel</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.io7m.seltzer</groupId>
       <artifactId>com.io7m.seltzer.api</artifactId>
     </dependency>
@@ -55,10 +61,13 @@
       <groupId>com.io7m.jranges</groupId>
       <artifactId>com.io7m.jranges.core</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>com.tianscar.javasound</groupId>
-      <artifactId>javasound-flac</artifactId>
+      <groupId>com.io7m.jxe</groupId>
+      <artifactId>com.io7m.jxe.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jattribute</groupId>
+      <artifactId>com.io7m.jattribute.core</artifactId>
     </dependency>
 
     <dependency>
@@ -131,9 +140,15 @@
       <groupId>com.io7m.jsamplebuffer</groupId>
       <artifactId>com.io7m.jsamplebuffer.xmedia</artifactId>
     </dependency>
+
+    <!-- UI components. -->
     <dependency>
       <groupId>com.io7m.brackish</groupId>
       <artifactId>com.io7m.brackish.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.ivoirax</groupId>
+      <artifactId>com.io7m.ivoirax.core</artifactId>
     </dependency>
 
     <!-- Telemetry. -->
@@ -190,43 +205,6 @@
     </resources>
 
     <plugins>
-      <!-- Ignore dependencies that bytecode analysis gets wrong. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <failOnWarning>true</failOnWarning>
-          <ignoredUnusedDeclaredDependencies>
-            <ignoredUnusedDeclaredDependency>
-              org.openjfx:*
-            </ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>
-              com.io7m.jxtrand:*
-            </ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>
-              com.io7m.aurantium:*
-            </ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>
-              com.io7m.jbssio:*
-            </ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>
-              ch.qos.logback:logback-classic:*
-            </ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>
-              org.apache.tika:tika-parser-image-module:*
-            </ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>
-              com.tianscar.javasound:javasound-flac:*
-            </ignoredUnusedDeclaredDependency>
-          </ignoredUnusedDeclaredDependencies>
-          <ignoredUsedUndeclaredDependencies>
-            <ignoredUsedUndeclaredDependency>
-              org.openjfx:*
-            </ignoredUsedUndeclaredDependency>
-          </ignoredUsedUndeclaredDependencies>
-        </configuration>
-      </plugin>
-
       <!-- Generate SQL file -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -297,11 +275,6 @@
             <artifactId>jooq-meta-extensions</artifactId>
             <version>${org.jooq.version}</version>
           </dependency>
-          <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-postgres-extensions</artifactId>
-            <version>${org.jooq.version}</version>
-          </dependency>
         </dependencies>
       </plugin>
 
@@ -323,6 +296,43 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Ignore dependencies that bytecode analysis gets wrong. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <failOnWarning>true</failOnWarning>
+          <ignoredUnusedDeclaredDependencies>
+            <ignoredUnusedDeclaredDependency>
+              org.openjfx:*
+            </ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>
+              com.io7m.jxtrand:*
+            </ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>
+              com.io7m.aurantium:*
+            </ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>
+              com.io7m.jbssio:*
+            </ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>
+              ch.qos.logback:logback-classic:*
+            </ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>
+              org.apache.tika:tika-parser-image-module:*
+            </ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>
+              com.tianscar.javasound:javasound-flac:*
+            </ignoredUnusedDeclaredDependency>
+          </ignoredUnusedDeclaredDependencies>
+          <ignoredUsedUndeclaredDependencies>
+            <ignoredUsedUndeclaredDependency>
+              org.openjfx:*
+            </ignoredUsedUndeclaredDependency>
+          </ignoredUsedUndeclaredDependencies>
+        </configuration>
       </plugin>
 
       <!-- Generate strings. -->

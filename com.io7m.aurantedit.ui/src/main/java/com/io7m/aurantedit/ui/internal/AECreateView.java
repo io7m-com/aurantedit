@@ -17,11 +17,8 @@
 
 package com.io7m.aurantedit.ui.internal;
 
-import com.io7m.aurantium.api.AUIdentifier;
-import com.io7m.aurantium.api.AUVersion;
 import com.io7m.jwheatsheaf.api.JWFileChooserAction;
 import com.io7m.jwheatsheaf.api.JWFileChooserConfiguration;
-import com.io7m.lanark.core.RDottedName;
 import com.io7m.repetoir.core.RPServiceDirectoryType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -30,6 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,13 +40,12 @@ import java.util.ResourceBundle;
 public final class AECreateView implements AEViewType
 {
   private final Stage stage;
-  private Optional<AECreateRequest> result;
+  private Optional<Path> result;
   private final AEFileChoosersType fileChoosers;
 
   @FXML private Button cancel;
   @FXML private Button create;
   @FXML private TextField fileField;
-  @FXML private TextField idField;
 
   /**
    * A file creation view.
@@ -73,7 +70,7 @@ public final class AECreateView implements AEViewType
    * @return The result
    */
 
-  public Optional<AECreateRequest> result()
+  public Optional<Path> result()
   {
     return this.result;
   }
@@ -85,8 +82,6 @@ public final class AECreateView implements AEViewType
   {
     this.fileField.textProperty()
       .addListener((observable) -> this.validate());
-    this.idField.textProperty()
-      .addListener(observable -> this.validate());
 
     Platform.runLater(() -> {
       this.cancel.requestFocus();
@@ -103,7 +98,6 @@ public final class AECreateView implements AEViewType
         throw new IllegalArgumentException();
       }
 
-      new RDottedName(this.idField.getText().trim());
       this.create.setDisable(false);
     } catch (final IllegalArgumentException e) {
       this.create.setDisable(true);
@@ -113,16 +107,7 @@ public final class AECreateView implements AEViewType
   @FXML
   private void onCreateSelected()
   {
-    this.result = Optional.of(
-      new AECreateRequest(
-        Paths.get(this.fileField.getText().trim()),
-        new AUIdentifier(
-          new RDottedName(this.idField.getText().trim()),
-          new AUVersion(0, 0)
-        )
-      )
-    );
-
+    this.result = Optional.of(Paths.get(this.fileField.getText()));
     this.stage.close();
   }
 

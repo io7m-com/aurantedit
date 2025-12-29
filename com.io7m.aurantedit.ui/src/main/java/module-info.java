@@ -27,6 +27,8 @@ open module com.io7m.aurantedit.ui
   requires static org.osgi.annotation.bundle;
   requires static org.osgi.annotation.versioning;
 
+  requires com.io7m.aurantedit.filemodel;
+
   requires com.io7m.aurantium.api;
   requires com.io7m.aurantium.parser.api;
   requires com.io7m.aurantium.validation.api;
@@ -35,17 +37,19 @@ open module com.io7m.aurantedit.ui
   requires com.io7m.brackish.core;
   requires com.io7m.darco.api;
   requires com.io7m.darco.sqlite;
+  requires com.io7m.ivoirax.core;
   requires com.io7m.jade.api;
   requires com.io7m.jaffirm.core;
+  requires com.io7m.jattribute.core;
   requires com.io7m.jmulticlose.core;
   requires com.io7m.jranges.core;
   requires com.io7m.jsamplebuffer.api;
   requires com.io7m.jsamplebuffer.vanilla;
   requires com.io7m.jsamplebuffer.xmedia;
-  requires com.io7m.junreachable.core;
   requires com.io7m.jwheatsheaf.api;
   requires com.io7m.jwheatsheaf.oxygen;
   requires com.io7m.jwheatsheaf.ui;
+  requires com.io7m.jxe.core;
   requires com.io7m.jxtrand.api;
   requires com.io7m.lanark.core;
   requires com.io7m.miscue.core;
@@ -57,7 +61,6 @@ open module com.io7m.aurantedit.ui
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
-  requires javasound.flac;
   requires org.jooq;
   requires org.slf4j;
   requires org.xerial.sqlitejdbc;
@@ -69,4 +72,9 @@ open module com.io7m.aurantedit.ui
   uses AEDatabaseQueryProviderType;
 
   exports com.io7m.aurantedit.ui;
+
+  exports com.io7m.aurantedit.ui.internal
+    to com.io7m.aurantedit.main;
+  exports com.io7m.aurantedit.ui.internal.key_assignments
+    to com.io7m.aurantedit.main;
 }
