@@ -63,7 +63,7 @@
     <!-- Third-party dependencies. -->
     <ch.qos.logback.version>1.5.12</ch.qos.logback.version>
     <io.opentelemetry.version>1.44.1</io.opentelemetry.version>
-    <net.jqwik.version>1.9.1</net.jqwik.version>
+    <net.jqwik.version>1.9.3</net.jqwik.version>
     <org.javafx.version>25.0.1</org.javafx.version>
     <org.jooq.version>3.19.15</org.jooq.version>
     <org.junit.version>5.14.1</org.junit.version>
