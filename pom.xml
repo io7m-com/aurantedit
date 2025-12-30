@@ -37,7 +37,7 @@
 
     <!-- io7m dependencies. -->
     <com.io7m.aurantium.version>1.0.0-beta0002</com.io7m.aurantium.version>
-    <com.io7m.brackish.version>0.0.1</com.io7m.brackish.version>
+    <com.io7m.brackish.version>1.0.0</com.io7m.brackish.version>
     <com.io7m.darco.version>3.2.0</com.io7m.darco.version>
     <com.io7m.ivoirax.version>0.0.2</com.io7m.ivoirax.version>
     <com.io7m.jade.version>1.0.3</com.io7m.jade.version>
