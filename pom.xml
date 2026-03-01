@@ -61,7 +61,7 @@
     <com.io7m.xstructural.version>1.8.1</com.io7m.xstructural.version>
 
     <!-- Third-party dependencies. -->
-    <ch.qos.logback.version>1.5.27</ch.qos.logback.version>
+    <ch.qos.logback.version>1.5.28</ch.qos.logback.version>
     <io.opentelemetry.version>1.58.0</io.opentelemetry.version>
     <net.jqwik.version>1.9.3</net.jqwik.version>
     <org.javafx.version>25.0.2</org.javafx.version>
